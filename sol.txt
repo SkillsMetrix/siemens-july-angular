@@ -1,67 +1,67 @@
-import { Component } from "@angular/core";
-
+import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-footer',
-    templateUrl: 'Footer.component.html'
+  selector: 'app-viewchild',
+  templateUrl: './viewchild.component.html',
+  styleUrls: ['./viewchild.component.css']
 })
-export class Footer {
+export class ViewchildComponent {
+  count=0
+  message=''
 
-    compname = 'Footer Component'
-    mycity = 'mumbai'
-    myprofile = 'https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg'
+  increment(){
 
-    addUSer() {
-        alert('user added')
-    }
+    this.count++
+    this.message=`Count is ${this.count}`
+  }
+  decrement(){
+    this.count--
+    this.message=`Count is ${this.count}`
+  }
+
+}
+----
+{{message}}
 
 
-    people: any[] = [
-        {
-            "name": 'admin',
-            "country": "USA"
-        },
-        {
-            "name": 'Manager',
-            "country": "India"
-        },
-        {
-            "name": 'QA',
-            "country": "Uk"
-        }
-    ]
-    applyStyle(country: string) {
-        switch (country) {
-            case 'USA':
-                return 'green'
-            case 'Uk':
-                return 'purple'
-            case 'India':
-                return 'blue'
-            default:
-                return null
-        }
-    }
 
+-------
+
+import { Component, ViewChild } from '@angular/core';
+import { ViewchildComponent } from '../viewchild/viewchild.component';
+
+@Component({
+  selector: 'app-viewchildmain',
+  templateUrl: './viewchildmain.component.html',
+  styleUrls: ['./viewchildmain.component.css']
+})
+export class ViewchildmainComponent {
+@ViewChild(ViewchildComponent)
+  private vc :ViewchildComponent;
+
+  inc(){
+    this.vc.increment()
+  }
+  dec(){
+    this.vc.decrement()
+  }
 }
 
 
--------------
 
 
-<p>{{compname}}</p>
-
-<input placeholder="Enter City" [(ngModel)]="mycity"/>
+----
 
 
-MyCity: {{mycity}}
 
-<img [src]="myprofile" width="100"/>
+<app-viewchild></app-viewchild>
 
-<button (click)="addUSer()">Add</button>
 
-<hr>
-<p>Dynamic Style</p>
-<ul *ngFor="let person of people">
-    <li [ngStyle]="{color:applyStyle(person.country)}">{{person.name}}</li>
-</ul>
+<button (click)="inc()">INC</button>
+
+
+<button (click)="dec()">DEC</button>
+
+
+
+---------------
