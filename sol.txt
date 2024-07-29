@@ -1,56 +1,67 @@
-import { Injectable } from "@angular/core";
-
-
-@Injectable()
-export class UserService{
-
-    loadUsers():string[]{
-        return ['admin','manager','qa']
-    }
-}
-
------------------
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-
-import { AppComponent } from './app.component';
-import { MainApp } from './components/mainapp/MainApp.component';
-import { Header } from './components/header/Header.component';
-import { Footer } from './components/footer/Footer.component';
-import { UserService } from './shared/services/user.service';
-
-@NgModule({
-  // contains Components/Pipes/Directives
-  declarations: [
-    AppComponent,MainApp,Header,Footer
-  ],
-  // contains Modules
-  imports: [
-    BrowserModule
-  ],
-  //contains Services
-  providers: [UserService],
-  //contains first comp to load
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
-
-------------
-
 import { Component } from "@angular/core";
-import { UserService } from "src/app/shared/services/user.service";
 
 
 @Component({
-    selector:'header-app',
-    templateUrl:'Header.component.html'
+    selector: 'app-footer',
+    templateUrl: 'Footer.component.html'
 })
-export class Header{
+export class Footer {
 
-compname='Header Component'
-users:string[]=[]
-constructor(us:UserService){
-    this.users=us.loadUsers()
+    compname = 'Footer Component'
+    mycity = 'mumbai'
+    myprofile = 'https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg'
+
+    addUSer() {
+        alert('user added')
+    }
+
+
+    people: any[] = [
+        {
+            "name": 'admin',
+            "country": "USA"
+        },
+        {
+            "name": 'Manager',
+            "country": "India"
+        },
+        {
+            "name": 'QA',
+            "country": "Uk"
+        }
+    ]
+    applyStyle(country: string) {
+        switch (country) {
+            case 'USA':
+                return 'green'
+            case 'Uk':
+                return 'purple'
+            case 'India':
+                return 'blue'
+            default:
+                return null
+        }
+    }
 
 }
-}
+
+
+-------------
+
+
+<p>{{compname}}</p>
+
+<input placeholder="Enter City" [(ngModel)]="mycity"/>
+
+
+MyCity: {{mycity}}
+
+<img [src]="myprofile" width="100"/>
+
+<button (click)="addUSer()">Add</button>
+
+<hr>
+<p>Dynamic Style</p>
+<ul *ngFor="let person of people">
+    <li [ngStyle]="{color:applyStyle(person.country)}">{{person.name}}</li>
+</ul>
