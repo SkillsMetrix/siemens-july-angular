@@ -1,0 +1,39 @@
+import { Injectable } from "@angular/core";
+
+
+@Injectable()
+export class UserService{
+
+    loadUsers():string[]{
+        return ['admin','manager','qa']
+    }
+}
+
+-----------------
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { MainApp } from './components/mainapp/MainApp.component';
+import { Header } from './components/header/Header.component';
+import { Footer } from './components/footer/Footer.component';
+import { UserService } from './shared/services/user.service';
+
+@NgModule({
+  // contains Components/Pipes/Directives
+  declarations: [
+    AppComponent,MainApp,Header,Footer
+  ],
+  // contains Modules
+  imports: [
+    BrowserModule
+  ],
+  //contains Services
+  providers: [UserService],
+  //contains first comp to load
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+------------
+
