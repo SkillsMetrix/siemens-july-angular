@@ -37,3 +37,20 @@ export class AppModule { }
 
 ------------
 
+import { Component } from "@angular/core";
+import { UserService } from "src/app/shared/services/user.service";
+
+
+@Component({
+    selector:'header-app',
+    templateUrl:'Header.component.html'
+})
+export class Header{
+
+compname='Header Component'
+users:string[]=[]
+constructor(us:UserService){
+    this.users=us.loadUsers()
+
+}
+}
