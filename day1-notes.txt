@@ -1,0 +1,52 @@
+VS Code
+NodeJS ver 20
+
+----------
+Angular -> SPA Framework
+
+ReactJS ,VueJS
+
+---
+
+JS
+
+1) object based, functional prog
+2) event centric
+3) Async in nature
+
+1)not an object oriented
+2) dynamic type
+3) browser incomp
+4) complex syntax
+
+Es6.0 ---> TS (typescript) > MS
+
+TS --> Babel-->  JS 
+
+bundling tool ->webpack
+
+
+NodeJS -> Platform 
+-----------
+
+npm i -g @angular/cli
+
+npx ng new my-app --no-standalone
+
+cd my-app
+
+ng serve   -> webpack
+
+-------
+
+component -> view
+
+
+---------
+1) create component (TS,Template)
+2) declare it under app.module under declaration 
+3) make the new comp child of mainapp comp
+
+
+
+
