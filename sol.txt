@@ -1,31 +1,63 @@
+import { Component } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'app-data-driven',
+  templateUrl: './data-driven.component.html',
+  styleUrls: ['./data-driven.component.css']
+})
+export class DataDrivenComponent {
+
+  myForm:FormGroup
+  uname:FormControl
+  pass:FormControl
+  email:FormControl
+  city:FormControl
+
+  createFormControls(){
+    this.uname=new FormControl('')
+    this.pass=new FormControl('')
+    this.email=new FormControl('')
+    this.city=new FormControl('')
+}
+createForm(){
+  this.myForm= new FormGroup({
+    uname:this.uname,
+    pass:this.pass,
+    email:this.email,
+    city:this.city
+  })
+}
+constructor(){
+  this.createFormControls()
+  this.createForm()
+}
+
+
+  addUser(){
+
+  }
+}
+
+----------
 <div class="container">
     <div class="card">
         <div class="card-header">
             User Registration Form
         </div>
         <div class="card-body">
-            <form (ngSubmit)="addUser(data)" #data=ngForm>
-                UserName:<input type="text" name="uname" placeholder="Enter Username" ngModel required #un=ngModel/>
-                <div *ngIf="un.invalid">
-                    <p>Username cant be blank</p>
-                </div>
-                Password:<input type="password" name="pass" placeholder="Enter Password" ngModel />
+            <form (ngSubmit)="addUser()">
+                UserName:<input type="text" placeholder="Enter Username" />
 
-                Email:<input type="email" name="email" placeholder="Enter Email" ngModel required email #em=ngModel/>
-
-                <div *ngIf="em.invalid">
-                    <div *ngIf="em.errors?.['required']"> Email cant be blank</div>
-                    <div *ngIf="em.errors?.['email']"> Email must be formatted</div>
-                </div>
+                Password:<input type="password" placeholder="Enter Password" />
 
 
-                City:<input type="text" name="city" placeholder="Enter City" ngModel /> &nbsp;
+                Email:<input type="email" placeholder="Enter Email" />
+
+
+                City:<input type="text" name="city" placeholder="Enter City" /> &nbsp;
 
                 <button class="btn btn-primary">Register</button>
-
-  
-
-
             </form>
         </div>
     </div>
