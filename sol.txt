@@ -4,14 +4,26 @@
             User Registration Form
         </div>
         <div class="card-body">
-            <form>
-                UserName:<input type="text" name="uname" placeholder="Enter Username" />
-                Password:<input type="password" name="pass" placeholder="Enter Password" />
+            <form (ngSubmit)="addUser(data)" #data=ngForm>
+                UserName:<input type="text" name="uname" placeholder="Enter Username" ngModel required #un=ngModel/>
+                <div *ngIf="un.invalid">
+                    <p>Username cant be blank</p>
+                </div>
+                Password:<input type="password" name="pass" placeholder="Enter Password" ngModel />
 
-                Email:<input type="email" name="email" placeholder="Enter Email" />
-                City:<input type="text" name="city" placeholder="Enter City" /> &nbsp;
+                Email:<input type="email" name="email" placeholder="Enter Email" ngModel required email #em=ngModel/>
+
+                <div *ngIf="em.invalid">
+                    <div *ngIf="em.errors?.['required']"> Email cant be blank</div>
+                    <div *ngIf="em.errors?.['email']"> Email must be formatted</div>
+                </div>
+
+
+                City:<input type="text" name="city" placeholder="Enter City" ngModel /> &nbsp;
 
                 <button class="btn btn-primary">Register</button>
+
+  
 
 
             </form>
