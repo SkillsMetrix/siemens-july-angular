@@ -1,5 +1,33 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FormServiceService {
+
+  addUserToDB(data: any) {
+
+    this.http.post('https://aic-angular-default-rtdb.firebaseio.com/userdata.json', data)
+      .subscribe((data) => {
+        console.log(data);
+
+      })
+
+
+  }
+  getDataFromDB() {
+    return this.http.get('https://aic-angular-default-rtdb.firebaseio.com/userdata.json')
+  }
+
+  constructor(private http: HttpClient) { }
+}
+
+------------
+
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormServiceService } from 'src/app/shared/form-service.service';
 
 @Component({
   selector: 'app-data-driven',
@@ -28,14 +56,27 @@ export class DataDrivenComponent {
       city: this.city
     })
   }
-  constructor() {
+  constructor(private fs:FormServiceService) {
     this.createFormControls()
     this.createForm()
+    this.fs.getDataFromDB()
   }
 
-
+  users:any[]
+getUser(){
+  this.fs.getDataFromDB()
+  .subscribe((res)=>{
+      const myarray=[]
+      for(let key in res){
+        myarray.push(res[key])
+      }
+      this.users=myarray
+  })
+  
+}
   addUser() {
-    console.log(this.myForm.value);
+    this.fs.addUserToDB(this.myForm.value)
+    
 }
 emailValidator(control: FormControl) {
     let email = control.value
@@ -51,8 +92,8 @@ emailValidator(control: FormControl) {
 }
 
 
-------------
 
+----------
 
 <div class="container">
     <div class="card">
@@ -84,6 +125,11 @@ emailValidator(control: FormControl) {
 
                 <button class="btn btn-primary" [disabled]="myForm.invalid">Register</button>
             </form>
+                  <button (click)="getUser()">Load Users</button>
+            <hr>
+            <ul>
+                <li *ngFor="let user of users">{{user.uname}}--{{user.email}}</li>
+            </ul>
         </div>
     </div>
 </div>
