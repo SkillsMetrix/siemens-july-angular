@@ -1,100 +1,30 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class FormServiceService {
-
-  addUserToDB(data: any) {
-
-    this.http.post('https://aic-angular-default-rtdb.firebaseio.com/userdata.json', data)
-      .subscribe((data) => {
-        console.log(data);
-
-      })
-
-
-  }
-  getDataFromDB() {
-    return this.http.get('https://aic-angular-default-rtdb.firebaseio.com/userdata.json')
-  }
-
-  constructor(private http: HttpClient) { }
-}
-
-------------
-
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FormServiceService } from 'src/app/shared/form-service.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-data-driven',
-  templateUrl: './data-driven.component.html',
-  styleUrls: ['./data-driven.component.css']
+  selector: 'app-builder-driven',
+  templateUrl: './builder-driven.component.html',
+  styleUrls: ['./builder-driven.component.css']
 })
-export class DataDrivenComponent {
+export class BuilderDrivenComponent  implements OnInit{
+   myForm:FormGroup
+  addUser(){
+console.log(this.myForm.value);
 
-  myForm: FormGroup
-  uname: FormControl
-  pass: FormControl
-  email: FormControl
-  city: FormControl
-
-  createFormControls() {
-    this.uname = new FormControl('', Validators.required)
-    this.pass = new FormControl('', [Validators.required, Validators.minLength(6)])
-    this.email = new FormControl('', [Validators.required, Validators.email,this.emailValidator])
-    this.city = new FormControl('')
   }
-  createForm() {
-    this.myForm = new FormGroup({
-      uname: this.uname,
-      pass: this.pass,
-      email: this.email,
-      city: this.city
+  constructor(private fb:FormBuilder){}
+  ngOnInit(): void {
+    this.myForm=this.fb.group({
+      uname:['',Validators.required],
+      pass:['',[Validators.required,Validators.minLength(6)]],
+      email:['',[Validators.required,Validators.email]],
+      city:['']
     })
+      
   }
-  constructor(private fs:FormServiceService) {
-    this.createFormControls()
-    this.createForm()
-    this.fs.getDataFromDB()
-  }
-
-  users:any[]
-getUser(){
-  this.fs.getDataFromDB()
-  .subscribe((res)=>{
-      const myarray=[]
-      for(let key in res){
-        myarray.push(res[key])
-      }
-      this.users=myarray
-  })
-  
+      
 }
-  addUser() {
-    this.fs.addUserToDB(this.myForm.value)
-    
-}
-emailValidator(control: FormControl) {
-    let email = control.value
-    if (email && email.indexOf('@') != -1) {
-      let [before, domain] = email.split('@')
-      if (domain !== 'siemens.com') {
-        return {
-          errorMessage: {
-            keyname: domain
-          }}}}
-    return null
-  }
-}
-
-
-
-----------
-
+---
 <div class="container">
     <div class="card">
         <div class="card-header">
@@ -106,30 +36,18 @@ emailValidator(control: FormControl) {
 
 
 
-                Password:<input type="password" placeholder="Enter Password" formControlName="pass"/>
-
-                <div *ngIf="pass.invalid">
-                    <div *ngIf="pass.errors?.['required']"> password cant be blank</div>
-                    <div *ngIf="pass.errors?.['minlength']"> password must be 6 char long</div>
-                </div>
+                Password:<input type="password" placeholder="Enter Password" formControlName="pass" />
 
 
-                Email:<input type="email" placeholder="Enter Email" formControlName="email"/>
-                <div *ngIf="email.invalid">
-                    <div *ngIf="email.errors?.['required']"> Email cant be blank</div>
-                    <div *ngIf="email.errors?.['errorMessage']"> domain must be 'siemens.com'</div>
-                </div>
+
+                Email:<input type="email" placeholder="Enter Email" formControlName="email" />
 
 
-                City:<input type="text" name="city" placeholder="Enter City" formControlName="city"/> &nbsp;
+                City:<input type="text" name="city" placeholder="Enter City" formControlName="city" /> &nbsp;
 
-                <button class="btn btn-primary" [disabled]="myForm.invalid">Register</button>
+                <button class="btn btn-primary">Register</button>
             </form>
-                  <button (click)="getUser()">Load Users</button>
-            <hr>
-            <ul>
-                <li *ngFor="let user of users">{{user.uname}}--{{user.email}}</li>
-            </ul>
+
         </div>
     </div>
 </div>
