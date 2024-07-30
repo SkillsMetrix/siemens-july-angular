@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-data-driven',
@@ -8,56 +8,81 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class DataDrivenComponent {
 
-  myForm:FormGroup
-  uname:FormControl
-  pass:FormControl
-  email:FormControl
-  city:FormControl
+  myForm: FormGroup
+  uname: FormControl
+  pass: FormControl
+  email: FormControl
+  city: FormControl
 
-  createFormControls(){
-    this.uname=new FormControl('')
-    this.pass=new FormControl('')
-    this.email=new FormControl('')
-    this.city=new FormControl('')
+  createFormControls() {
+    this.uname = new FormControl('', Validators.required)
+    this.pass = new FormControl('', [Validators.required, Validators.minLength(6)])
+    this.email = new FormControl('', [Validators.required, Validators.email,this.emailValidator])
+    this.city = new FormControl('')
+  }
+  createForm() {
+    this.myForm = new FormGroup({
+      uname: this.uname,
+      pass: this.pass,
+      email: this.email,
+      city: this.city
+    })
+  }
+  constructor() {
+    this.createFormControls()
+    this.createForm()
+  }
+
+
+  addUser() {
+    console.log(this.myForm.value);
 }
-createForm(){
-  this.myForm= new FormGroup({
-    uname:this.uname,
-    pass:this.pass,
-    email:this.email,
-    city:this.city
-  })
-}
-constructor(){
-  this.createFormControls()
-  this.createForm()
-}
-
-
-  addUser(){
-
+emailValidator(control: FormControl) {
+    let email = control.value
+    if (email && email.indexOf('@') != -1) {
+      let [before, domain] = email.split('@')
+      if (domain !== 'siemens.com') {
+        return {
+          errorMessage: {
+            keyname: domain
+          }}}}
+    return null
   }
 }
 
-----------
+
+------------
+
+
 <div class="container">
     <div class="card">
         <div class="card-header">
             User Registration Form
         </div>
         <div class="card-body">
-            <form (ngSubmit)="addUser()">
-                UserName:<input type="text" placeholder="Enter Username" />
-
-                Password:<input type="password" placeholder="Enter Password" />
+            <form (ngSubmit)="addUser()" [formGroup]="myForm">
+                UserName:<input type="text" placeholder="Enter Username" formControlName="uname" />
 
 
-                Email:<input type="email" placeholder="Enter Email" />
+
+                Password:<input type="password" placeholder="Enter Password" formControlName="pass"/>
+
+                <div *ngIf="pass.invalid">
+                    <div *ngIf="pass.errors?.['required']"> password cant be blank</div>
+                    <div *ngIf="pass.errors?.['minlength']"> password must be 6 char long</div>
+                </div>
 
 
-                City:<input type="text" name="city" placeholder="Enter City" /> &nbsp;
+                Email:<input type="email" placeholder="Enter Email" formControlName="email"/>
+                <div *ngIf="email.invalid">
+                    <div *ngIf="email.errors?.['required']"> Email cant be blank</div>
+                    <div *ngIf="email.errors?.['errorMessage']"> domain must be 'siemens.com'</div>
+                </div>
 
-                <button class="btn btn-primary">Register</button>
+
+                City:<input type="text" name="city" placeholder="Enter City" formControlName="city"/> &nbsp;
+
+                <button class="btn btn-primary" [disabled]="myForm.invalid">Register</button>
             </form>
         </div>
     </div>
