@@ -1,67 +1,20 @@
-import { Component } from '@angular/core';
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            User Registration Form
+        </div>
+        <div class="card-body">
+            <form>
+                UserName:<input type="text" name="uname" placeholder="Enter Username" />
+                Password:<input type="password" name="pass" placeholder="Enter Password" />
 
-@Component({
-  selector: 'app-viewchild',
-  templateUrl: './viewchild.component.html',
-  styleUrls: ['./viewchild.component.css']
-})
-export class ViewchildComponent {
-  count=0
-  message=''
+                Email:<input type="email" name="email" placeholder="Enter Email" />
+                City:<input type="text" name="city" placeholder="Enter City" /> &nbsp;
 
-  increment(){
-
-    this.count++
-    this.message=`Count is ${this.count}`
-  }
-  decrement(){
-    this.count--
-    this.message=`Count is ${this.count}`
-  }
-
-}
-----
-{{message}}
+                <button class="btn btn-primary">Register</button>
 
 
-
--------
-
-import { Component, ViewChild } from '@angular/core';
-import { ViewchildComponent } from '../viewchild/viewchild.component';
-
-@Component({
-  selector: 'app-viewchildmain',
-  templateUrl: './viewchildmain.component.html',
-  styleUrls: ['./viewchildmain.component.css']
-})
-export class ViewchildmainComponent {
-@ViewChild(ViewchildComponent)
-  private vc :ViewchildComponent;
-
-  inc(){
-    this.vc.increment()
-  }
-  dec(){
-    this.vc.decrement()
-  }
-}
-
-
-
-
-----
-
-
-
-<app-viewchild></app-viewchild>
-
-
-<button (click)="inc()">INC</button>
-
-
-<button (click)="dec()">DEC</button>
-
-
-
----------------
+            </form>
+        </div>
+    </div>
+</div>
