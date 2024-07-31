@@ -1,53 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-@Component({
-  selector: 'app-builder-driven',
-  templateUrl: './builder-driven.component.html',
-  styleUrls: ['./builder-driven.component.css']
-})
-export class BuilderDrivenComponent  implements OnInit{
-   myForm:FormGroup
-  addUser(){
-console.log(this.myForm.value);
-
-  }
-  constructor(private fb:FormBuilder){}
-  ngOnInit(): void {
-    this.myForm=this.fb.group({
-      uname:['',Validators.required],
-      pass:['',[Validators.required,Validators.minLength(6)]],
-      email:['',[Validators.required,Validators.email]],
-      city:['']
-    })
-      
-  }
-      
-}
----
 <div class="container">
-    <div class="card">
-        <div class="card-header">
-            User Registration Form
-        </div>
-        <div class="card-body">
-            <form (ngSubmit)="addUser()" [formGroup]="myForm">
-                UserName:<input type="text" placeholder="Enter Username" formControlName="uname" />
-
-
-
-                Password:<input type="password" placeholder="Enter Password" formControlName="pass" />
-
-
-
-                Email:<input type="email" placeholder="Enter Email" formControlName="email" />
-
-
-                City:<input type="text" name="city" placeholder="Enter City" formControlName="city" /> &nbsp;
-
-                <button class="btn btn-primary">Register</button>
-            </form>
-
-        </div>
-    </div>
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">UserDetails</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Portfolio</a>
+        </li>
+    </ul>
 </div>
