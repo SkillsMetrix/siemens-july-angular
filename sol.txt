@@ -19,21 +19,47 @@ export class MovieEffects {
             )
         )
     )
-    addMovie$=createEffect(()=>
-    this.action$.pipe(
-        ofType(addMovies),
-        concatMap((movie)=>
-        this.ds.addMovies(movie).pipe(
-            map((movie)=> addMoviesSuccess({movie})),
-            catchError(()=> EmptyError)
+    addMovie$ = createEffect(() =>
+        this.action$.pipe(
+          ofType(addMovies),
+          tap((movie) => console.log(movie)),
+          concatMap(( movie ) =>
+            this.ds.addMovies(movie).pipe(
+              map((newMovie) => addMoviesSuccess(newMovie)),
+              catchError(() => EmptyError)
+            )
+          )
         )
-        )
-
-    ))
+      );
 }
 
 
---------
+----
+
+import { createAction, props } from '@ngrx/store';
+import { Movie } from '../../Models/movie';
+// called by effect by listining to the event
+export const getMovies = createAction('[Movie] Get movie');
+
+// called by reducer by listining to the event
+
+export const getMoviesSuccess = createAction('[Movie] Get movie Success',
+  (movies: ReadonlyArray<Movie>) => ({movies})
+);
+// called by effect by listining to the event
+export const addMovies = createAction(
+  '[Movie] Add movie',
+  (movie: Movie) => movie
+)
+// called by reducer by listining to the event
+
+export const addMoviesSuccess = createAction(
+  '[Movie] Add movie success',
+  (movie: Movie) => ({movie})
+)
+
+
+---------
 
 import { createReducer, on } from '@ngrx/store';
 import { Movie } from 'src/app/Models/movie';
