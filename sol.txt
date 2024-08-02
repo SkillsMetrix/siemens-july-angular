@@ -1,75 +1,74 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
-@Component({
-  selector: 'app-parent',
-  templateUrl: './parent.component.html',
-  styleUrls: ['./parent.component.css'],
-  changeDetection:ChangeDetectionStrategy.OnPush
+import { TestBed } from '@angular/core/testing'
+import { TestcompComponent } from './testcomp.component'
 
+describe('test app', () => {
+    beforeEach(() => TestBed.configureTestingModule({
+        declarations: [TestcompComponent]
+    }))
+    // test case
+    it('should create a new app', () => {
+        const fixture = TestBed.createComponent(TestcompComponent)
+        const app = fixture.componentInstance;
+        expect(app).toBeTruthy()
+    })
+    it('should create a new app', () => {
+        const fixture = TestBed.createComponent(TestcompComponent)
+        const app = fixture.componentInstance;
+        expect(app.compname).toBe('siemens')
+    })
+
+    it('should check the data', () => {
+        const fixture = TestBed.createComponent(TestcompComponent)
+        fixture.detectChanges()
+        const compiled = fixture.nativeElement as HTMLElement
+        expect(compiled.querySelector('.content span')?.textContent).toContain('siemens')
+    })
 })
-export class ParentComponent implements OnInit{
-  arr=[]
-
-  title=''
-ngOnInit(): void {
-    setInterval(()=>{
-      this.arr=[Math.random()]
-    },1000)
-}
-  parent(){
-    console.log('parent');
-    return 'Parent'
-    
-  }
-
-}
 
 
----------
+----
 
-<app-child [arr]="arr"></app-child>
+// Karma configuration file, see link for more information
+// https://karma-runner.github.io/1.0/config/configuration-file.html
 
-{{parent()}}
-
-------
-
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-
-@Component({
-  selector: 'app-child',
-  templateUrl: './child.component.html',
-  styleUrls: ['./child.component.css'],
-  changeDetection:ChangeDetectionStrategy.OnPush
-})
-export class ChildComponent implements OnInit {
-  @Input()
-  arr=[]
-  title=''
-  number=0
-constructor(private cf:ChangeDetectorRef){}
-ngOnInit(): void {
-    setInterval(()=>{
-      this.number=Math.random()
-      this.cf.markForCheck()
-    },1000)
-}
-
-  child(){
-    console.log('child');
-    return 'Child'
-    
-  }
-  
-
-
-}
--------
-
-<p>child works!</p>
-
-{{child()}}
-<br>
-{{number}}
-
-<br>
-{{arr[0]}}
+module.exports = function (config) {
+  config.set({
+    basePath: '',
+    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('karma-coverage'),
+      require('@angular-devkit/build-angular/plugins/karma'),
+      require('karma-htmlfile-reporter')
+    ],
+    client: {
+      jasmine: {
+        
+      },
+      clearContext: false // leave Jasmine Spec Runner output visible in browser
+    },
+    jasmineHtmlReporter: {
+      suppressAll: true // removes the duplicated traces
+    },
+    coverageReporter: {
+      dir: require('path').join(__dirname, './coverage/test-comp'),
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' }
+      ]
+    },
+    reporters: ['progress', 'kjhtml'],
+    reporters:['progress','html'],
+    htmlReporter:{
+      outputFile:'tests/myreport.html',
+      pageTitle:'Siemens Test Report',
+      useLegacyStyle:true
+    },
+    browsers: ['Chrome'],
+    restartOnFileChange: true
+  });
+};
