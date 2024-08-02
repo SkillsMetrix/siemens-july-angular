@@ -1,79 +1,75 @@
-import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { DataService } from "src/app/Service/data.service";
-import { addMovies, addMoviesSuccess, getMovies, getMoviesSuccess } from "../Actions/movie.action";
-import { catchError, concatMap, exhaustMap, map, tap } from "rxjs/operators";
-import { EmptyError } from "rxjs";
-import { Injectable } from "@angular/core";
- 
-@Injectable()
-export class MovieEffects {
-    constructor(private action$: Actions, private ds: DataService) { }
-    loadMovie$ = createEffect(() =>
-        this.action$.pipe(
-            ofType(getMovies),
-            exhaustMap(() =>
-                this.ds.getMovies().pipe(
-                    map((movies) => getMoviesSuccess(movies)),
-                  catchError(() => EmptyError)
-                )
-            )
-        )
-    )
-    addMovie$ = createEffect(() =>
-        this.action$.pipe(
-          ofType(addMovies),
-          tap((movie) => console.log(movie)),
-          concatMap(( movie ) =>
-            this.ds.addMovies(movie).pipe(
-              map((newMovie) => addMoviesSuccess(newMovie)),
-              catchError(() => EmptyError)
-            )
-          )
-        )
-      );
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-parent',
+  templateUrl: './parent.component.html',
+  styleUrls: ['./parent.component.css'],
+  changeDetection:ChangeDetectionStrategy.OnPush
+
+})
+export class ParentComponent implements OnInit{
+  arr=[]
+
+  title=''
+ngOnInit(): void {
+    setInterval(()=>{
+      this.arr=[Math.random()]
+    },1000)
 }
+  parent(){
+    console.log('parent');
+    return 'Parent'
+    
+  }
 
-
-----
-
-import { createAction, props } from '@ngrx/store';
-import { Movie } from '../../Models/movie';
-// called by effect by listining to the event
-export const getMovies = createAction('[Movie] Get movie');
-
-// called by reducer by listining to the event
-
-export const getMoviesSuccess = createAction('[Movie] Get movie Success',
-  (movies: ReadonlyArray<Movie>) => ({movies})
-);
-// called by effect by listining to the event
-export const addMovies = createAction(
-  '[Movie] Add movie',
-  (movie: Movie) => movie
-)
-// called by reducer by listining to the event
-
-export const addMoviesSuccess = createAction(
-  '[Movie] Add movie success',
-  (movie: Movie) => ({movie})
-)
+}
 
 
 ---------
 
-import { createReducer, on } from '@ngrx/store';
-import { Movie } from 'src/app/Models/movie';
-import { addMovies, addMoviesSuccess, getMovies, getMoviesSuccess } from '../Actions/movie.action';
+<app-child [arr]="arr"></app-child>
 
-export interface MovieState {
-  movies: ReadonlyArray<Movie>;
+{{parent()}}
+
+------
+
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  templateUrl: './child.component.html',
+  styleUrls: ['./child.component.css'],
+  changeDetection:ChangeDetectionStrategy.OnPush
+})
+export class ChildComponent implements OnInit {
+  @Input()
+  arr=[]
+  title=''
+  number=0
+constructor(private cf:ChangeDetectorRef){}
+ngOnInit(): void {
+    setInterval(()=>{
+      this.number=Math.random()
+      this.cf.markForCheck()
+    },1000)
 }
 
-const initialState: ReadonlyArray<Movie> = [];
+  child(){
+    console.log('child');
+    return 'Child'
+    
+  }
+  
 
-export const movieReducer = createReducer(
-  initialState,
-  on(getMoviesSuccess,(state,{movies}) => [...movies]),
-  on(addMoviesSuccess, (state, {movie}) => [...state, movie])
-);
 
+}
+-------
+
+<p>child works!</p>
+
+{{child()}}
+<br>
+{{number}}
+
+<br>
+{{arr[0]}}
