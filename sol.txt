@@ -1,51 +1,67 @@
-import { Directive, ElementRef, Renderer2 } from "@angular/core";
+import { createAction, props } from '@ngrx/store';
+import { Movie } from '../../Models/movie';
+// called by effect by listining to the event
+export const getMovies = createAction('[Movie] Get movie');
+
+// called by reducer by listining to the event
+
+export const getMoviesSuccess = createAction('[Movie] Get movie Success',
+  (movies: ReadonlyArray<Movie>) => ({movies})
+);
+// called by effect by listining to the event
+export const addMovies = createAction(
+  '[Movie] Add movie',
+  (movie: Movie) => movie
+)
+// called by reducer by listining to the event
+
+export const addMoviesSuccess = createAction(
+  '[Movie] Add movie success',
+  props<{ movie: Movie }>()
+)
 
 
-@Directive({
-    selector: '[appColor]',
-    standalone:true
-})
-export class ColorDirective {
-    private color='blue'
-    constructor(ef:ElementRef,ren:Renderer2){
-       ren.setStyle(ef.nativeElement,'color',this.color) 
-    }
+-------------
 
+import { createReducer, on } from '@ngrx/store';
+import { Movie } from 'src/app/Models/movie';
+import { addMovies, getMovies, getMoviesSuccess } from '../Actions/movie.action';
+
+export interface MovieState {
+  movies: ReadonlyArray<Movie>;
 }
 
---------
+const initialState: ReadonlyArray<Movie> = [];
 
-import { Directive, ElementRef, Renderer2 } from "@angular/core";
+export const movieReducer = createReducer(
+  initialState,
+  on(getMoviesSuccess,(state,{movies}) => [...movies]),
+  on(addMovies, (state, movie) => [...state, movie])
+);
 
 
-@Directive({
-    selector: '[appBold]',
-    standalone:true
-})
-export class FontDirective {
-    private weight='bold'
-    constructor(ef:ElementRef,ren:Renderer2){
-       ren.setStyle(ef.nativeElement,'font-weight',this.weight) 
-    }
 
+----------
+
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { DataService } from "src/app/Service/data.service";
+import { getMovies, getMoviesSuccess } from "../Actions/movie.action";
+import { catchError, exhaustMap, map } from "rxjs/operators";
+import { EmptyError } from "rxjs";
+import { Injectable } from "@angular/core";
+
+@Injectable()
+export class MovieEffects {
+    constructor(private action$: Actions, private ds: DataService) { }
+    loadMovie$ = createEffect(() =>
+        this.action$.pipe(
+            ofType(getMovies),
+            exhaustMap(() =>
+                this.ds.getMovies().pipe(
+                    map((movies) => getMoviesSuccess(movies)),
+                  catchError(() => EmptyError)
+                )
+            )
+        )
+    )
 }
-
---------
-
-import { Directive, ElementRef, Renderer2 } from "@angular/core";
-import { ColorDirective } from "./color.directive";
-import { FontDirective } from "./FontDirective.directive";
-
-
-@Directive({
-    selector: '[appStyle]',
-    standalone:true,
-    hostDirectives:[ColorDirective,FontDirective]
-})
-export class AppStyleDirective {
-    
-
-}
-
---------------
-
