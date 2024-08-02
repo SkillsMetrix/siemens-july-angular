@@ -1,55 +1,10 @@
-import { createAction, props } from '@ngrx/store';
-import { Movie } from '../../Models/movie';
-// called by effect by listining to the event
-export const getMovies = createAction('[Movie] Get movie');
-
-// called by reducer by listining to the event
-
-export const getMoviesSuccess = createAction('[Movie] Get movie Success',
-  (movies: ReadonlyArray<Movie>) => ({movies})
-);
-// called by effect by listining to the event
-export const addMovies = createAction(
-  '[Movie] Add movie',
-  (movie: Movie) => movie
-)
-// called by reducer by listining to the event
-
-export const addMoviesSuccess = createAction(
-  '[Movie] Add movie success',
-  props<{ movie: Movie }>()
-)
-
-
--------------
-
-import { createReducer, on } from '@ngrx/store';
-import { Movie } from 'src/app/Models/movie';
-import { addMovies, getMovies, getMoviesSuccess } from '../Actions/movie.action';
-
-export interface MovieState {
-  movies: ReadonlyArray<Movie>;
-}
-
-const initialState: ReadonlyArray<Movie> = [];
-
-export const movieReducer = createReducer(
-  initialState,
-  on(getMoviesSuccess,(state,{movies}) => [...movies]),
-  on(addMovies, (state, movie) => [...state, movie])
-);
-
-
-
-----------
-
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { DataService } from "src/app/Service/data.service";
-import { getMovies, getMoviesSuccess } from "../Actions/movie.action";
-import { catchError, exhaustMap, map } from "rxjs/operators";
+import { addMovies, addMoviesSuccess, getMovies, getMoviesSuccess } from "../Actions/movie.action";
+import { catchError, concatMap, exhaustMap, map, tap } from "rxjs/operators";
 import { EmptyError } from "rxjs";
 import { Injectable } from "@angular/core";
-
+ 
 @Injectable()
 export class MovieEffects {
     constructor(private action$: Actions, private ds: DataService) { }
@@ -64,4 +19,35 @@ export class MovieEffects {
             )
         )
     )
+    addMovie$=createEffect(()=>
+    this.action$.pipe(
+        ofType(addMovies),
+        concatMap((movie)=>
+        this.ds.addMovies(movie).pipe(
+            map((movie)=> addMoviesSuccess({movie})),
+            catchError(()=> EmptyError)
+        )
+        )
+
+    ))
 }
+
+
+--------
+
+import { createReducer, on } from '@ngrx/store';
+import { Movie } from 'src/app/Models/movie';
+import { addMovies, addMoviesSuccess, getMovies, getMoviesSuccess } from '../Actions/movie.action';
+
+export interface MovieState {
+  movies: ReadonlyArray<Movie>;
+}
+
+const initialState: ReadonlyArray<Movie> = [];
+
+export const movieReducer = createReducer(
+  initialState,
+  on(getMoviesSuccess,(state,{movies}) => [...movies]),
+  on(addMoviesSuccess, (state, {movie}) => [...state, movie])
+);
+
